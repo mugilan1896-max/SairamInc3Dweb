@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap');
+
+:root { font-family: 'Manrope', sans-serif; color: #efe9df; background: #141719; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+html, body, #app { margin: 0; min-width: 100%; min-height: 100%; }
+body { background: #141719; overflow-x: hidden; }
+#experience-scroll { position: relative; height: 5500px; }
+#stage { position: relative; width: 100%; height: 100svh; min-height: 560px; overflow: hidden; background: #141719; }
+#webgl { display: block; width: 100%; height: 100%; }
+.loading-screen { position: fixed; inset: 0; z-index: 10; display: grid; place-content: center; gap: 14px; padding: 24px; color: #f1e7d5; background: #151818; transition: opacity .8s ease, visibility .8s ease; }
+.loading-screen.is-ready { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-kicker, .scene-label, .scroll-cue { font: 500 10px/1.2 'DM Mono', monospace; letter-spacing: .18em; text-transform: uppercase; }
+.loading-screen strong { font: 500 clamp(1.8rem, 4vw, 3.8rem)/1.04 'Manrope', sans-serif; letter-spacing: .01em; }
+.loading-screen small { font: 500 10px 'DM Mono', monospace; color: #9a948a; }
+.loader-line { width: min(320px, 72vw); height: 1px; margin-top: 12px; overflow: hidden; background: #3d3b36; }
+.loader-line i { display: block; width: 100%; height: 100%; transform-origin: left; background: #c99654; animation: load 1.2s ease-out both; }
+@keyframes load { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.scene-label { position: absolute; top: 30px; left: 34px; right: 34px; display: flex; justify-content: space-between; color: rgba(248, 241, 228, .68); pointer-events: none; }
+.scene-label b { color: #d0a05c; font-weight: 500; }
+.scroll-cue { position: absolute; left: 50%; bottom: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; color: rgba(248,241,228,.7); transform: translateX(-50%); pointer-events: none; }
+.scroll-cue i { display: block; width: 1px; height: 42px; background: linear-gradient(#d0a05c, transparent); animation: cue 1.8s ease-in-out infinite; }
+@keyframes cue { 0%, 100% { opacity: .3; transform: scaleY(.65); transform-origin: top; } 50% { opacity: 1; transform: scaleY(1); } }
+@media (max-width: 700px) { .scene-label { top: 20px; left: 18px; right: 18px; font-size: 9px; } .scene-label span { max-width: 170px; line-height: 1.5; } .scroll-cue { bottom: 20px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
