@@ -4,9 +4,12 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { exportGLB } from './debug/exportGLB.js'
 import Lenis from 'lenis'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { EntranceScene } from './scenes/EntranceScene'
+import { ReceptionScene } from './scenes/ReceptionScene'
 import { createScrollTimeline } from './animation/ScrollTimeline'
 import { createDebugMode } from './debug/DebugMode'
 import { createCameraWaypoints } from './config/cameraWaypoints'
+import { applySairamGLBMaterials } from './materials/SairamGLBMaterials'
 import { sceneConfig } from './config/sceneConfig'
 
 const app = document.querySelector('#app')
@@ -22,6 +25,10 @@ window.exportSairamGLB = () => { exportGLB(scene, 'sairam-current-scene.glb') }
 const camera = new THREE.PerspectiveCamera(42, 1, 0.05, 80); camera.position.set(sceneConfig.camera.exteriorWide.x, sceneConfig.camera.exteriorWide.y, sceneConfig.camera.exteriorWide.z)
 scene.add(camera)
 const controls = { target: new THREE.Vector3(0, 3, 0) }
+const entrance = new EntranceScene()
+const reception = new ReceptionScene()
+reception.group.visible = false
+scene.add(entrance.group, reception.group)
 const exteriorLight = new THREE.DirectionalLight(sceneConfig.lighting.exterior.color, sceneConfig.lighting.exterior.intensity); exteriorLight.position.set(-8, 12, 10); exteriorLight.castShadow = true; exteriorLight.shadow.mapSize.set(1024, 1024); scene.add(exteriorLight)
 const interiorLight = new THREE.PointLight(sceneConfig.lighting.interior.color, 0.35, 18, 1.5); interiorLight.position.set(0, 5.5, -8); scene.add(interiorLight); scene.add(new THREE.HemisphereLight(0xaebaca, 0x27201d, 1.1))
 let timeline
@@ -64,19 +71,19 @@ new GLTFLoader().load('/models/sairam-incubation-final.glb', gltf => {
 	model.name = 'sairam-incubation-final.glb'
 	model.updateMatrixWorld(true)
 	scene.add(model)
-	model.traverse(object => {
-		if (!object.isMesh) return
-		object.castShadow = false
-		object.receiveShadow = true
-		if (object.material) object.material.needsUpdate = true
-	})
-	const doors = { left: model.getObjectByName('door_left_pivot'), right: model.getObjectByName('door_right_pivot') }
+	const glbEntrance = model.getObjectByName('entrance_façade')
+	if (glbEntrance) glbEntrance.visible = false
+	const glbReception = model.getObjectByName('reception_interior')
+	const postReception = model.getObjectByName('postReceptionGroup') || model.getObjectByName('sairamincu4_Downgo_haul')
+	if (glbReception) glbReception.visible = true
+	if (postReception) postReception.visible = false
+	applySairamGLBMaterials(model)
 	const waypoints = createCameraWaypoints(model)
 	const interiorDoor = createInteriorDoorHinge(model, model.getObjectByName('Downgo_Door'))
 	createWaypointMarkers(model, waypoints)
-	timeline = createScrollTimeline({ camera, controls, doors, interiorDoor, waypoints, lights: { exterior: exteriorLight, interior: interiorLight }, reducedMotion })
-	debug = createDebugMode({ camera, target: controls.target, domElement: canvas, scene, objects: { model, entranceFacade: model.getObjectByName('entrance_façade'), reception: model.getObjectByName('reception_interior'), postReception: model.getObjectByName('postReceptionGroup'), display: model.getObjectByName('Downgo_44_inch_display_placeholder'), interiorDoor } })
-	window.__sairamWalkthrough = { model, camera, controls, timeline, interiorDoor, doors, waypoints }
+	timeline = createScrollTimeline({ camera, controls, doors: entrance.doors, interiorDoor, waypoints, postReception, lights: { exterior: exteriorLight, interior: interiorLight }, reducedMotion })
+	debug = createDebugMode({ camera, target: controls.target, domElement: canvas, scene, objects: { entrance: entrance.group, doorLeft: entrance.doors.left, doorRight: entrance.doors.right, entranceBranding: entrance.objects.incubator, sairamBranding: entrance.objects.institutions, model, entranceFacade: glbEntrance, reception: glbReception, postReception, display: model.getObjectByName('Downgo_44_inch_display_placeholder'), interiorDoor } })
+	window.__sairamWalkthrough = { model, camera, controls, timeline, interiorDoor, doors: entrance.doors, waypoints }
 	ScrollTrigger.refresh()
 	timeline.syncProgress(0)
 	document.querySelector('.loading-screen small').textContent = 'Loaded final building'
