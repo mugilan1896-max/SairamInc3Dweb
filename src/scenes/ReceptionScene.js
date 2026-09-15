@@ -121,10 +121,10 @@ export class ReceptionScene {
     const wall = new THREE.Mesh(new THREE.BoxGeometry(18, 7.4, 0.34), wallMaterial); wall.name = 'reception wall'; wall.position.set(0, 3.7, sceneConfig.reception.wallZ); wall.receiveShadow = true; this.group.add(wall)
     const ceiling = new THREE.Mesh(new THREE.BoxGeometry(18, 0.3, 15), ceilingMaterial); ceiling.name = 'reception ceiling'; ceiling.position.set(0, 7.2, -7); ceiling.receiveShadow = true; this.group.add(ceiling)
     const deskCenterZ = sceneConfig.reception.deskZ + 1.25
-    const desk = curvedBand('reception desk fascia', deskCenterZ, 4.45, 5.75, Math.PI * 0.16, Math.PI * 0.84, 0.38, 1.92, counterFrontMaterial)
-    const deskTop = curvedBand('reception desk top', deskCenterZ, 4.34, 5.9, Math.PI * 0.16, Math.PI * 0.84, 1.92, 2.22, counterTopMaterial)
+    const desk = curvedBand('reception desk fascia', deskCenterZ, 4.15, 5.4, Math.PI * 0.16, Math.PI * 0.84, 0.38, 1.92, counterFrontMaterial)
+    const deskTop = curvedBand('reception desk top', deskCenterZ, 4.04, 5.55, Math.PI * 0.16, Math.PI * 0.84, 1.92, 2.22, counterTopMaterial)
     this.group.add(desk, deskTop)
-    const seam = curvedBand('reception desk seam', deskCenterZ + 0.01, 4.46, 5.77, Math.PI * 0.16, Math.PI * 0.84, 1.34, 1.39, new THREE.MeshStandardMaterial({ color: 0xc1b8ae, roughness: 0.74 }))
+    const seam = curvedBand('reception desk seam', deskCenterZ + 0.01, 4.16, 5.42, Math.PI * 0.16, Math.PI * 0.84, 1.34, 1.39, new THREE.MeshStandardMaterial({ color: 0xc1b8ae, roughness: 0.74 }))
     this.group.add(seam)
 
     const branding = createBranding(); branding.group.position.set(0, 3.6, sceneConfig.reception.wallZ + 0.22); this.group.add(branding.group)
